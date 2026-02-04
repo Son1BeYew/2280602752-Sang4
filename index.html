@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <meta name="description" content="Danh sách sản phẩm từ Platzi Fake Store API - Giao diện hiện đại và đẹp mắt">
+    <title>Platzi Store - Danh Sách Sản Phẩm</title>
+
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-section">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <i class="bi bi-shop-window"></i>
+                    Platzi Store
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#"><i class="bi bi-house-door"></i> Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="bi bi-grid"></i> Sản phẩm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="bi bi-cart3"></i> Giỏ hàng</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="hero-title">Khám Phá Sản Phẩm Tuyệt Vời</h1>
+                    <p class="hero-subtitle">Trải nghiệm mua sắm trực tuyến với hàng ngàn sản phẩm chất lượng</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="filter-card">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label for="searchTitle" class="form-label">
+                                <i class="bi bi-search"></i> Tìm kiếm
+                            </label>
+                            <input type="text" id="searchTitle" class="form-control" placeholder="Nhập tên sản phẩm...">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="categoryFilter" class="form-label">
+                                <i class="bi bi-funnel"></i> Danh mục
+                            </label>
+                            <select id="categoryFilter" class="form-select">
+                                <option value="">Tất cả danh mục</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="priceMin" class="form-label">
+                                <i class="bi bi-cash"></i> Giá tối thiểu
+                            </label>
+                            <input type="number" id="priceMin" class="form-control" placeholder="0">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="priceMax" class="form-label">
+                                <i class="bi bi-cash-stack"></i> Giá tối đa
+                            </label>
+                            <input type="number" id="priceMax" class="form-control" placeholder="1000">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">
+                                <i class="bi bi-sort-down"></i> Sắp xếp
+                            </label>
+                            <div class="d-flex gap-2">
+                                <select id="sortBy" class="form-select">
+                                    <option value="">Không sắp xếp</option>
+                                    <option value="title">Tên (A-Z)</option>
+                                    <option value="title-desc">Tên (Z-A)</option>
+                                    <option value="price">Giá (Thấp - Cao)</option>
+                                    <option value="price-desc">Giá (Cao - Thấp)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="section-header">
+                        <h2 class="section-title">Danh Sách Sản Phẩm</h2>
+                        <div class="d-flex align-items-center gap-3">
+                            <button id="createProductBtn" class="btn btn-success">
+                                <i class="bi bi-plus-circle"></i> Tạo sản phẩm
+                            </button>
+                            <button id="exportCsvBtn" class="btn btn-outline-primary">
+                                <i class="bi bi-download"></i> Export CSV
+                            </button>
+                            <div class="d-flex align-items-center">
+                                <label for="itemsPerPage" class="me-2 mb-0" style="white-space: nowrap;">Hiển thị:</label>
+                                <select id="itemsPerPage" class="form-select form-select-sm" style="width: auto;">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="20" selected>20</option>
+                                </select>
+                            </div>
+                            <div class="products-count">
+                                <span id="productCount" class="badge">0 sản phẩm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Đang tải...</span>
+                </div>
+                <p class="mt-3 text-muted">Đang tải sản phẩm...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="alert alert-danger d-none" role="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span id="errorText"></span>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="productsContainer" class="row g-4">
+                <!-- Products will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <nav aria-label="Product pagination">
+                        <ul id="pagination" class="pagination justify-content-center">
+                            <!-- Pagination will be inserted here by JavaScript -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div class="modal fade" id="productDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-info-circle"></i> Chi Tiết Sản Phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="productDetailBody">
+                    <!-- Content will be inserted by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="editProductBtn">
+                        <i class="bi bi-pencil"></i> Chỉnh sửa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Chỉnh Sửa Sản Phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm">
+                        <input type="hidden" id="editProductId">
+                        <div class="mb-3">
+                            <label for="editTitle" class="form-label">Tên sản phẩm *</label>
+                            <input type="text" class="form-control" id="editTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPrice" class="form-label">Giá *</label>
+                            <input type="number" class="form-control" id="editPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCategoryId" class="form-label">Danh mục *</label>
+                            <select class="form-select" id="editCategoryId" required>
+                                <!-- Categories will be inserted by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editImages" class="form-label">URL Ảnh (phân cách bằng dấu phẩy)</label>
+                            <input type="text" class="form-control" id="editImages" placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveEditBtn">
+                        <i class="bi bi-save"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Product Modal -->
+    <div class="modal fade" id="createProductModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Tạo Sản Phẩm Mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createProductForm">
+                        <div class="mb-3">
+                            <label for="createTitle" class="form-label">Tên sản phẩm *</label>
+                            <input type="text" class="form-control" id="createTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="createPrice" class="form-label">Giá *</label>
+                            <input type="number" class="form-control" id="createPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="createDescription" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="createDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="createCategoryId" class="form-label">Danh mục *</label>
+                            <select class="form-select" id="createCategoryId" required>
+                                <!-- Categories will be inserted by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="createImages" class="form-label">URL Ảnh (phân cách bằng dấu phẩy)</label>
+                            <input type="text" class="form-control" id="createImages" placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-success" id="saveCreateBtn">
+                        <i class="bi bi-plus-circle"></i> Tạo sản phẩm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">
+                        <i class="bi bi-c-circle"></i> 2026 Platzi Store. Powered by Platzi Fake Store API
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="footer-link"><i class="bi bi-github"></i> GitHub</a>
+                    <a href="#" class="footer-link"><i class="bi bi-twitter"></i> Twitter</a>
+                    <a href="#" class="footer-link"><i class="bi bi-linkedin"></i> LinkedIn</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
