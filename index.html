@@ -20,34 +20,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header-section">
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
-                <a class="navbar-brand" href="#">
-                    <i class="bi bi-shop-window"></i>
-                    Platzi Store
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#"><i class="bi bi-house-door"></i> Trang chủ</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="bi bi-grid"></i> Sản phẩm</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="bi bi-cart3"></i> Giỏ hàng</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
@@ -122,6 +94,14 @@
                     <div class="section-header">
                         <h2 class="section-title">Danh Sách Sản Phẩm</h2>
                         <div class="d-flex align-items-center gap-3">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary active" id="viewCard">
+                                    <i class="bi bi-grid-3x3-gap"></i> Card
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="viewTable">
+                                    <i class="bi bi-table"></i> Table
+                                </button>
+                            </div>
                             <button id="createProductBtn" class="btn btn-success">
                                 <i class="bi bi-plus-circle"></i> Tạo sản phẩm
                             </button>
@@ -158,9 +138,44 @@
                 <span id="errorText"></span>
             </div>
 
-            <!-- Products Grid -->
+            <!-- Products Grid (Card View) -->
             <div id="productsContainer" class="row g-4">
                 <!-- Products will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Products Table (Table View) -->
+            <div id="productsTable" class="d-none">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 60px;">Ảnh</th>
+                                        <th>ID</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Giá</th>
+                                        <th>Danh mục</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTableBody">
+                                    <!-- Table rows will be inserted here by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div id="productDescriptionPanel" class="description-panel">
+                            <div class="description-panel-placeholder">
+                                <i class="bi bi-info-circle" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-3">Di chuột vào sản phẩm để xem mô tả</p>
+                            </div>
+                            <div id="productDescriptionContent" class="description-panel-content d-none">
+                                <!-- Description will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Pagination -->

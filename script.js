@@ -11,10 +11,13 @@ let allProducts = [];
 let filteredProducts = [];
 let allCategories = [];
 let currentProductId = null;
+let currentView = 'card'; // 'card' or 'table'
 
 // DOM Elements
 const elements = {
     productsContainer: document.getElementById('productsContainer'),
+    productsTable: document.getElementById('productsTable'),
+    productsTableBody: document.getElementById('productsTableBody'),
     loadingSpinner: document.getElementById('loadingSpinner'),
     errorMessage: document.getElementById('errorMessage'),
     errorText: document.getElementById('errorText'),
@@ -27,8 +30,11 @@ const elements = {
     itemsPerPage: document.getElementById('itemsPerPage'),
     sortBy: document.getElementById('sortBy'),
     exportCsvBtn: document.getElementById('exportCsvBtn'),
-    createProductBtn: document.getElementById('createProductBtn')
+    createProductBtn: document.getElementById('createProductBtn'),
+    viewCard: document.getElementById('viewCard'),
+    viewTable: document.getElementById('viewTable')
 };
+
 
 // ===================================
 // API Functions
@@ -231,6 +237,55 @@ function createProductCard(product) {
     `;
 }
 
+/**
+ * Create HTML for a single product table row
+ */
+function createProductTableRow(product) {
+    // Get first valid image URL
+    let imageUrl = 'https://via.placeholder.com/50x50?text=No+Image';
+    
+    if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+        const validImage = product.images.find(img => {
+            if (typeof img === 'string' && img.trim() !== '') {
+                try {
+                    new URL(img);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+            return false;
+        });
+        
+        if (validImage) {
+            imageUrl = validImage;
+        }
+    }
+    
+    const categoryName = product.category?.name || 'N/A';
+    
+    return `
+        <tr data-product-id="${product.id}" 
+            onmouseenter="showProductDescription(${product.id})" 
+            onmouseleave="hideProductDescription()"
+            onclick="showProductDetail(${product.id})">
+            <td>
+                <img src="${imageUrl}" 
+                     alt="${escapeHtml(product.title)}" 
+                     class="table-product-img"
+                     referrerpolicy="no-referrer"
+                     crossorigin="anonymous"
+                     onerror="this.src='https://via.placeholder.com/50x50?text=Error'">
+            </td>
+            <td>${product.id}</td>
+            <td class="table-product-title">${escapeHtml(product.title)}</td>
+            <td class="table-product-price">$${product.price}</td>
+            <td><span class="table-product-category">${escapeHtml(categoryName)}</span></td>
+        </tr>
+    `;
+}
+
+
 
 /**
  * Render pagination controls
@@ -292,16 +347,31 @@ function renderProducts() {
     const productsToShow = filteredProducts.slice(startIndex, endIndex);
     
     if (productsToShow.length === 0) {
-        elements.productsContainer.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
-                <p class="text-muted mt-3">Không tìm thấy sản phẩm nào</p>
-            </div>
-        `;
+        if (currentView === 'card') {
+            elements.productsContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                    <p class="text-muted mt-3">Không tìm thấy sản phẩm nào</p>
+                </div>
+            `;
+        } else {
+            elements.productsTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                        <p class="text-muted mt-3">Không tìm thấy sản phẩm nào</p>
+                    </td>
+                </tr>
+            `;
+        }
         return;
     }
     
-    elements.productsContainer.innerHTML = productsToShow.map(product => createProductCard(product)).join('');
+    if (currentView === 'card') {
+        elements.productsContainer.innerHTML = productsToShow.map(product => createProductCard(product)).join('');
+    } else {
+        elements.productsTableBody.innerHTML = productsToShow.map(product => createProductTableRow(product)).join('');
+    }
 }
 
 /**
@@ -659,6 +729,110 @@ async function saveNewProduct() {
 
 
 // ===================================
+// Description Panel Functions
+// ===================================
+
+/**
+ * Show product description in side panel
+ */
+function showProductDescription(productId) {
+    const product = filteredProducts.find(p => p.id === productId);
+    if (!product) return;
+    
+    // Highlight the row
+    document.querySelectorAll('#productsTableBody tr').forEach(row => {
+        row.classList.remove('row-highlighted');
+    });
+    const currentRow = document.querySelector(`#productsTableBody tr[data-product-id="${productId}"]`);
+    if (currentRow) {
+        currentRow.classList.add('row-highlighted');
+    }
+    
+    // Get image URL
+    let imageUrl = 'https://via.placeholder.com/400x200?text=No+Image';
+    if (product.images && product.images.length > 0) {
+        const validImage = product.images.find(img => {
+            try {
+                new URL(img);
+                return true;
+            } catch {
+                return false;
+            }
+        });
+        if (validImage) imageUrl = validImage;
+    }
+    
+    const categoryName = product.category?.name || 'N/A';
+    const description = product.description || 'Không có mô tả';
+    
+    const descriptionHTML = `
+        <img src="${imageUrl}" 
+             class="description-panel-image"
+             referrerpolicy="no-referrer"
+             crossorigin="anonymous"
+             onerror="this.src='https://via.placeholder.com/400x200?text=Error'">
+        <h4 class="description-panel-title">${escapeHtml(product.title)}</h4>
+        <div class="description-panel-price">$${product.price}</div>
+        <div class="description-panel-category">
+            <i class="bi ${getCategoryIcon(categoryName)}"></i> ${escapeHtml(categoryName)}
+        </div>
+        <div class="mb-2">
+            <strong>ID:</strong> ${product.id}
+        </div>
+        <div>
+            <strong>Mô tả:</strong>
+            <p class="description-panel-text mt-2">${escapeHtml(description)}</p>
+        </div>
+    `;
+    
+    document.querySelector('.description-panel-placeholder').classList.add('d-none');
+    const contentPanel = document.getElementById('productDescriptionContent');
+    contentPanel.innerHTML = descriptionHTML;
+    contentPanel.classList.remove('d-none');
+}
+
+/**
+ * Hide product description panel
+ */
+function hideProductDescription() {
+    // Remove highlight from all rows
+    document.querySelectorAll('#productsTableBody tr').forEach(row => {
+        row.classList.remove('row-highlighted');
+    });
+    
+    // Show placeholder
+    document.querySelector('.description-panel-placeholder').classList.remove('d-none');
+    document.getElementById('productDescriptionContent').classList.add('d-none');
+}
+
+// ===================================
+// View Toggle Functions
+// ===================================
+
+/**
+ * Switch between card and table view
+ */
+function switchView(view) {
+    currentView = view;
+    
+    // Update button states
+    if (view === 'card') {
+        elements.viewCard.classList.add('active');
+        elements.viewTable.classList.remove('active');
+        elements.productsContainer.classList.remove('d-none');
+        elements.productsTable.classList.add('d-none');
+    } else {
+        elements.viewTable.classList.add('active');
+        elements.viewCard.classList.remove('active');
+        elements.productsContainer.classList.add('d-none');
+        elements.productsTable.classList.remove('d-none');
+    }
+    
+    // Re-render products in new view
+    renderProducts();
+}
+
+// ===================================
 // Utility Functions
 // ===================================
 
@@ -710,6 +884,10 @@ function initEventListeners() {
     
     // Create product button
     elements.createProductBtn.addEventListener('click', showCreateModal);
+    
+    // View toggle buttons
+    elements.viewCard.addEventListener('click', () => switchView('card'));
+    elements.viewTable.addEventListener('click', () => switchView('table'));
     
     // Edit product button in detail modal
     document.getElementById('editProductBtn').addEventListener('click', showEditModal);
